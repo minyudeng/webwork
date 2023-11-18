@@ -42,8 +42,7 @@ const selectd=(index)=>{
     background-color: rgb(245, 246, 247);
 }
 .el-row{
-    height: 100%;
-    position: relative;
+    background-color: rgb(245, 246, 247);
 }
 .left{
     position: relative;

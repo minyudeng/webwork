@@ -3,7 +3,8 @@
         <el-row class="tac">
             <el-col :span="4" id="leftcol">
                 <el-affix :offset="60">
-                    <h1 style="background-color: rgb(243, 244, 246);">
+                    <div>
+                        <h1 style="background-color: rgb(243, 244, 246);">
                         <el-icon>
                             <Cpu />
                         </el-icon> 功能列表
@@ -31,6 +32,7 @@
                         </el-menu-item>
 
                     </el-menu>
+                    </div>
                 </el-affix>
 
             </el-col>
@@ -65,7 +67,6 @@ onMounted(() => {
 </script>
 <style scoped>
 #main{
-    height: calc(100vh - 60px);
 }
 .el-menu-item{
     background-color: rgb(243, 244, 246);
@@ -79,11 +80,10 @@ onMounted(() => {
     background-color: #ccd0cf;
 }
 
-.el-row {
-    height: 100%;
-}
+
 #leftcol{
     background-color: rgb(243, 244, 246);
+    height: 100vh;
 }
 
 </style>

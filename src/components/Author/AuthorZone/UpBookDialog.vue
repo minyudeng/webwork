@@ -3,8 +3,10 @@ import request from '@/axios/request';
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { MyNotification, MyMessage } from '@/plugins/Message.js';
+import {  useRouter } from 'vue-router';
 
 const store = useStore()
+const router = useRouter()
 //是否是创建书籍
 const isCreate = ref(true)
 const book = ref({
@@ -13,7 +15,7 @@ const book = ref({
     intro: null,
     cover: null,
     types: null,
-    bid : null
+    bid: null
 })
 //prop
 const props = defineProps({
@@ -30,7 +32,8 @@ onMounted(() => {
         book.value.intro = oldBook.intro
         book.value.cover = oldBook.cover
         book.value.types = oldBook.types
-        book.value.biu = oldBook.bid
+        book.value.bid = oldBook.bid
+        book.value.aid = oldBook.aid
 
         book.value.types.forEach(e => {
             myTypeList.value.push(e.typeId)
@@ -99,15 +102,31 @@ const submit = () => {
                 cover: file.value,
                 typeId: myTypeList.value
             }).then(res => {
-                MyMessage(res.msg, 'success')
+                MyMessage('创建成功', 'success')
+                location.reload()
             }).catch(error => {
-                MyMessage(error.data.msg, 'error')
+                MyMessage(error.msg, 'error')
             }).finally({
 
             })
         }
     } else {
-        //
+        //修改
+        const form = new FormData()
+        form.append('aid', book.value.aid)
+        form.append('bname', book.value.bname)
+        form.append('intro', book.value.intro)
+        form.append('typeId', myTypeList.value)
+        form.append('bid', book.value.bid)
+
+        request.put('/book/update', form)
+            .then(res => {
+                MyMessage('更改成功', 'success')
+                location.reload()
+            })
+            .catch(error => {
+                MyMessage('???', 'error')
+            })
     }
 }
 </script>
