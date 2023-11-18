@@ -107,7 +107,7 @@ const submit = () => {
             })
         }
     } else {
-        console.log(book.value.bname, book.value.intro, myTypeList.value, file.value);
+        //
     }
 }
 </script>
