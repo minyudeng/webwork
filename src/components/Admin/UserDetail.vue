@@ -3,9 +3,8 @@
         <div style="background-color: rgb(251, 253, 255);height: 100%;border: solid 1px var(--el-menu-border-color);">
             <el-row>
                 <el-col :span="3" style="padding-top: 10px;">
-                    <el-upload action="http://localhost:8081/avatarUpload" :show-file-list="false" :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
-                        :headers="{'Token': getToken()}">
+                    <el-upload :show-file-list="false"
+                        :before-upload="beforeAvatarUpload">
                         <el-avatar v-if="user.avatar" :size="80">
                             <img :src=user.avatar />
                         </el-avatar>
@@ -65,6 +64,8 @@ import UserEdit from '@/components/Admin/USerEdit.vue'
 import { inject, onBeforeMount, ref } from 'vue';
 import { ElMessage,ElMessageBox } from 'element-plus'
 import { useStore } from 'vuex';
+import request from '@/axios/request';
+import matchFileType from '@/plugins/File.js'
 
 const store = useStore()
 
@@ -99,6 +100,19 @@ const beforeAvatarUpload = (rawFile) => {
         ElMessage.error('头像大小不能超过2MB!')
         return false
     }
+    if(matchFileType(file.value.name) !== 'image'){
+        MyMessage('上传的文件必须是文件','warning')
+        return
+    }
+    request.postForm('/avatarUpload',{file : rawFile})
+    .then(res=>{
+        handleAvatarSuccess(res)
+        ElMessage.success('更新成功')
+    })
+    .catch(error=>{
+        ElMessage.error('更新失败')
+        return false
+    })
     return true
 }
 

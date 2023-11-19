@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <el-affix target="#app">
-      <div>
+  <div style="height: 100%;display: flex;
+  flex-direction: column;">
+      <div style="flex-shrink: 0;">
         <Top/>
       </div>
-    </el-affix>
-    <RouterView />
+    <div style="flex-grow: 1; overflow: auto;">
+      <RouterView />
+    </div>
     <el-dialog  v-model="dialogVisible" width="80%" :before-close="handleClose">
       <LoginView />
     </el-dialog>
@@ -71,6 +72,9 @@ provide("message",message)
   font-family: Arial;
   box-sizing: border-box;
 }
+html, body {
+  height: 100%;
+}
 a {
   text-decoration: none;
   
@@ -86,5 +90,8 @@ li{
 }
 .caret{
   caret-color: black;
+}
+#app{
+  height: 100vh;
 }
 </style>

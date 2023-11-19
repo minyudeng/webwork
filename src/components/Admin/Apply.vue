@@ -195,7 +195,7 @@ const applyData = ref([])
 
 .el-card {
     position: relative;
-    width: 300px;
+    width: 280px;
     height: 400px;
     border-radius: 10px;
     background-color: #91aa9d44;

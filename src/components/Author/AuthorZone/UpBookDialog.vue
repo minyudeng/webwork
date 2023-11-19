@@ -3,10 +3,8 @@ import request from '@/axios/request';
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { MyNotification, MyMessage } from '@/plugins/Message.js';
-import {  useRouter } from 'vue-router';
 
 const store = useStore()
-const router = useRouter()
 //是否是创建书籍
 const isCreate = ref(true)
 const book = ref({
@@ -55,6 +53,10 @@ const fileInputClick = () => {
 }
 const handleFileChange = (event) => {
     file.value = event.target.files[0];
+    if(matchFileType(file.value.name) !== 'image'){
+        MyMessage('上传的文件必须是文件','warning')
+        return
+    }
     if (file) {
         // 通过URL.createObjectURL创建一个临时URL
         book.value.cover = URL.createObjectURL(file.value)

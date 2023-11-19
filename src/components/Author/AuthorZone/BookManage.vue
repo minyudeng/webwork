@@ -2,35 +2,77 @@
 import { defineAsyncComponent, onMounted, ref } from 'vue';
 import request from '@/axios/request'
 import { useStore } from 'vuex';
+import matchFileType from '@/plugins/File.js'
+import { MyMessage, MyNotification } from '@/plugins/Message';
 
 const store = useStore()
 
-onMounted(()=>{
+onMounted(() => {
     getBooks()
 })
 
 //dialog部分
-const dialogComponent = defineAsyncComponent(()=>import('@/components/Author/AuthorZone/UpBookDialog.vue'))
+const dialogComponent = defineAsyncComponent(() => import('@/components/Author/AuthorZone/UpBookDialog.vue'))
 const dialog = ref(false)
-const changeDialog=(bealen,object)=> {
+const changeDialog = (bealen, object) => {
     dialog.value = bealen
     thisBook.value = object
 }
 
-const handleClose=()=>{
-    
+const handleClose = () => {
+
 }
 //如果是修改作品，传递作品参数
 const thisBook = ref(null)
 
 //获取作者作品
 const books = ref([])
-const getBooks =() => {
-    request.get('/book/uid',{params:{
-        uid : store.getters.getUserId
-    }})
-    .then(res=>{
-        books.value = res.data
+const getBooks = () => {
+    request.get('/book/uid', {
+        params: {
+            uid: store.getters.getUserId
+        }
+    })
+        .then(res => {
+            books.value = res.data
+        })
+}
+//更新封面
+const file = ref(null)
+const setImage = (event, bid) => {
+    file.value = event.target.files[0];
+    //判断类型
+    if (matchFileType(file.value.name) !== 'image') {
+        MyMessage('上传的文件必须是文件', 'warning')
+        return
+    }
+    //判断大小
+    if (file.value.size / 1024 / 1024 > 2) {
+        MyMessage('图片大小必须在2MB内', 'warning')
+        return
+    }
+    request.putForm('/book/updatecover', {
+        file: file.value,
+        bid: bid
+    }).then(res => {
+        MyMessage('更新成功', 'success')
+        location.reload()
+    }).catch(error => {
+        MyNotification('更新失败', '未知错误,请询问管理员', 'error')
+    })
+
+}
+//更新状态
+const setStatus=(status,bid)=>{
+    console.log(status,bid)
+    request.putForm('/book/updatestatus',{
+        status : status,
+        bid : bid
+    }).then(res=>{
+        MyMessage('完结撒花','success')
+        location.reload
+    }).catch(error=>{
+        MyMessage('未知错误','error')
     })
 }
 </script>
@@ -39,7 +81,7 @@ const getBooks =() => {
         <div class="contain">
             <div class="title">
                 <h4 style="padding-left: 10px;">我的作品</h4>
-                <el-button @click="changeDialog(true,{})">
+                <el-button @click="changeDialog(true, {})">
                     <el-icon>
                         <CirclePlus />
                     </el-icon>
@@ -50,42 +92,57 @@ const getBooks =() => {
             <el-divider style="margin:0;background-color: #fff;" />
             <div class="body">
                 <ul>
-                    <li v-for="(item,index) in books" :key="index">
-                        <el-image :src="item.cover">
-                            <template #error>
-                                <div class="image-slot">
-                                    <el-icon color="#0067e5">
-                                        <Picture />
-                                    </el-icon>
-                                </div>
-                            </template>
-                        </el-image>
-                        <el-row style="width: 80%;">
-                            <el-col :span="18">
-                                <div style="height: 10px;"></div>
+                    <li v-for="(item, index) in books" :key="index">
+                        <div>
+                            <el-image :src="item.cover">
+                                <template #error>
+                                    <div class="image-slot">
+                                        <el-icon color="#0067e5">
+                                            <Picture />
+                                        </el-icon>
+                                    </div>
+                                </template>
+                            </el-image>
+                            <input type="file" class="file-btn" required @change="setImage($event, item.bid)" />
+                        </div>
+
+                        <el-row style="
+                        width: 100%;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-around;">
+                            <div :span="16" style="display: flex;
+                            flex-direction: column;
+                            justify-content: space-around;">
                                 <h3>{{ item.bname }}</h3>
-                                <div style="width: 50%;">
-                                    <div style="height: 40px;"></div>
-                                    <p style="color: rgba(21,26,48,.5);">{{ item.updateTime }}</p>
-                                    <div style="height:20px;"></div>
-                                    <p style="color: rgba(21,26,48,.5);">收藏 {{ item.collection }}</p>
+                                <p style="color: rgba(21,26,48,.5);">{{ item.updateTime }}</p>
+                                <p style="color: rgba(21,26,48,.5);">收藏 {{ item.collection }}</p>
+                            </div>
+                            <div style="display: flex;
+                            flex-direction: column;
+                            justify-content: space-around;">
+                                <el-popover v-if="item.status === '连载中'" placement="top" trigger="click">
+                                    <template #reference>
+                                        <el-button>连载中</el-button>
+                                    </template>
+                                    <el-button style="width:120px;" type="warning" @click="setStatus('已完结',item.bid)">完结</el-button>
+                                </el-popover>
+                                <span v-else>{{ item.status }}</span>
+
+                                <div style="display: flex; flex-direction: row;">
+                                    <el-button @click="changeDialog(true, item)">作品设置</el-button>
+                                    <el-button>去写作</el-button>
                                 </div>
-                            </el-col>
-                            <el-col :span="6">
-                                <div style="width: 100%;height: 30px;">
-                                    <span style="width: 100%;height: 20px;">{{ item.status }}</span>
-                                </div>
-                                <el-button @click="changeDialog(true,item)">作品设置</el-button>
-                                <el-button>去写作</el-button>
-                            </el-col>
+                            </div>
                         </el-row>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
-    <el-dialog v-model="dialog" title="书籍信息" width="70%" :before-close="handleClose" draggable :show-close="false" :destroy-on-close="true">
-        <dialogComponent :changeDialog="changeDialog" :thisBook="thisBook"/>
+    <el-dialog v-model="dialog" title="书籍信息" width="70%" :before-close="handleClose" draggable :show-close="false"
+        :destroy-on-close="true">
+        <dialogComponent :changeDialog="changeDialog" :thisBook="thisBook" />
     </el-dialog>
 </template>
 <style scoped>
@@ -167,5 +224,18 @@ const getBooks =() => {
 .body ul li .el-button {
     margin-top: 80px;
     width: 80px;
+}
+
+.file-btn {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    outline: none;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
 }
 </style>
