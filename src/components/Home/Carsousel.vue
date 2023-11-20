@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import request from '@/axios/request';
 
 import ColorThief from 'colorthief'
@@ -8,9 +8,33 @@ const imgs = ref([
   require('../../../static/imgs/1679989834707_413772.png'),
   require('../../../static/imgs/1692934685326_289167.png')
 ])
+const data = ref([])
 
 onMounted(() => {
+  request.get('/book/last-four')
+    .then(res => {
+      data.value = res.data
+    })
 
+    // changeEnvent(0)
+  // nextTick(() => {
+  //   const item = document.querySelectorAll('.new .item .i1')
+  //   item.forEach(i => {
+  //     startMarquee(i)
+  //   })
+  // })
+    setTimeout(() => {
+    console.log(111);
+    const item = document.querySelectorAll('.new .item .i1')
+    item.forEach(i=>{
+      startMarquee(i)
+    })
+    changeEnvent(0)
+  }, 100)
+  nextTick(() => {
+    // 这里可以安全地访问更新后的 DOM
+    console.log('DOM 已更新');
+  })
 })
 
 const colorThief = new ColorThief()
@@ -28,6 +52,29 @@ const changeEnvent = (i) => {
   let img = document.querySelectorAll('.el-carousel__item img')
   changeColor(img[i])
 }
+//
+const startMarquee = () => {
+  const item = document.querySelector('.new .item .i1')
+  if (visibility(item)) {
+    item.classList.add('move')
+  }
+
+};
+
+const stopMarquee = () => {
+  const item = document.querySelector('.new .item .i1')
+  item.classList.remove('move')
+}
+const visibility = (ev) => {
+  const ev_weight = ev.scrollWidth; // 文本的实际宽度   scrollWidth：对象的实际内容的宽度，不包边线宽度，会随对象中内容超过可视区后而变大。
+  const content_weight = ev.clientWidth;// 文本的可视宽度 clientWidth：对象内容的可视区的宽度，不包滚动条等边线，会随对象显示大小的变化而改变。
+  if (ev_weight > content_weight) {
+    // 实际宽度 > 可视宽度  文字溢出
+    return true
+  } else {
+    return false
+  }
+}
 </script>
 <template>
   <div id="cars">
@@ -43,13 +90,13 @@ const changeEnvent = (i) => {
           <div>资讯</div>
         </span>
       </div>
-      <div v-for="i in 4">
+      <div v-for="i in data" :key="i">
         <div class="item">
-          <el-text class="i1" truncated>
-            小说名字哦哦哦哦哦哦
-          </el-text>
+          <p class="i1" @mouseover="stopMarquee" @mouseout="startMarquee">
+            {{ i.bname }}
+          </p>
           <el-text class="i2" line-clamp="2">
-            啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦噢噢噢噢
+            {{ i.intro }}
           </el-text>
         </div>
       </div>
@@ -111,20 +158,25 @@ const changeEnvent = (i) => {
   align-items: center;
   color: aliceblue;
   cursor: pointer;
-  background: linear-gradient(45deg, #007bff, rgb(107,207,251), #007bff, rgb(107,207,251));
+  background: linear-gradient(45deg, #007bff, rgb(107, 207, 251), #007bff, rgb(107, 207, 251));
   /* 多个颜色停止点 */
   transition: background 0.2s ease-in-out;
   /* 添加渐变过渡效果 */
-  animation: gradientAnimation 4s infinite; /* 添加动画 */
-  background-size: 400% 400%; /* 添加 background-size 属性 */
+  animation: gradientAnimation 4s infinite;
+  /* 添加动画 */
+  background-size: 400% 400%;
+  /* 添加 background-size 属性 */
 }
+
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -134,6 +186,7 @@ const changeEnvent = (i) => {
   margin-right: 35px;
   width: 224px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .new .item .i1 {
@@ -141,11 +194,29 @@ const changeEnvent = (i) => {
   color: #333;
   font-size: 16px;
   line-height: 2.5;
-  letter-spacing: 1.2px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   transition: all 0.3s ease-in-out;
 }
-.new .item .i1:hover{
-  color: #0bafff
+
+.new .item .i1:hover {
+  color: #0bafff;
+}
+
+.new .item .move {
+  display: inline-block;
+  animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 .new .item .i2 {
