@@ -96,11 +96,12 @@ const updateUser = () => {
 }
 
 const beforeAvatarUpload = (rawFile) => {
+    console.log("enter");
     if (rawFile.size / 1024 / 1024 > 2) {
         ElMessage.error('头像大小不能超过2MB!')
         return false
     }
-    if(matchFileType(file.value.name) !== 'image'){
+    if(matchFileType(rawFile.name) !== 'image'){
         MyMessage('上传的文件必须是文件','warning')
         return
     }
@@ -114,6 +115,7 @@ const beforeAvatarUpload = (rawFile) => {
         return false
     })
     return true
+    console.log(3);
 }
 
 const handleAvatarSuccess = (resp) => {

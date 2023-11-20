@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-menu :default-active="store.getters.getIndex" style="background-color: rgb(240,245,249);" mode="horizontal" :ellipsis="false">
+        <el-menu :default-active="store.getters.getIndex" style="background-color: rgba(245,245,247,.8);" mode="horizontal" :ellipsis="false">
             <span style="width: 200px;"></span>
             <el-menu-item index="1" @click="router.push('/home')">
                 首页
