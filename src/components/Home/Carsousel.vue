@@ -16,24 +16,22 @@ onMounted(() => {
       data.value = res.data
     })
 
-    // changeEnvent(0)
+  // changeEnvent(0)
   // nextTick(() => {
   //   const item = document.querySelectorAll('.new .item .i1')
   //   item.forEach(i => {
   //     startMarquee(i)
   //   })
   // })
-    setTimeout(() => {
-    console.log(111);
+  setTimeout(() => {
     const item = document.querySelectorAll('.new .item .i1')
-    item.forEach(i=>{
+    item.forEach(i => {
       startMarquee(i)
     })
     changeEnvent(0)
   }, 100)
   nextTick(() => {
     // 这里可以安全地访问更新后的 DOM
-    console.log('DOM 已更新');
   })
 })
 
@@ -95,9 +93,14 @@ const visibility = (ev) => {
           <p class="i1" @mouseover="stopMarquee" @mouseout="startMarquee">
             {{ i.bname }}
           </p>
-          <el-text class="i2" line-clamp="2">
-            {{ i.intro }}
-          </el-text>
+          <el-popover trigger="hover"
+            :content="i.bname">
+            <template #reference>
+              <el-text class="i2" line-clamp="2">
+                {{ i.intro }}
+              </el-text>
+            </template>
+          </el-popover>
         </div>
       </div>
     </div>
