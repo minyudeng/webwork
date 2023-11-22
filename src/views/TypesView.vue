@@ -7,6 +7,7 @@ import { useStore } from 'vuex';
 
 const store = useStore()
 onMounted(()=>{
+    document.title = '分类'
     store.dispatch("setIndex",'2')
 })
 </script>

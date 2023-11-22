@@ -1,27 +1,52 @@
 <script setup>
 import request from '@/axios/request';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { MyMessage } from '@/plugins/Message';
+import { useStore } from 'vuex';
 
 const props = defineProps({
     bid: String,
 })
+const store = useStore()
 const bid = ref(props.bid)
+const isCollection = ref()
 const book = ref({
     cover: null,
 })
 
 onMounted(() => {
     getBookData()
+    getCollectionStatus()
 })
-
 const getBookData = () => {
     request.get(`/book/${bid.value}`)
         .then(res => {
             book.value = res.data
+            document.title = book.value.bname
         }).catch(error => {
             MyMessage(error.data.msg, 'error')
         })
+}
+const getCollectionStatus = () =>{  
+    request.get('/book/is-collection',{params:{
+        bid : bid.value,
+        uid : store.getters.getUserId
+    }}).then(res =>{
+        isCollection.value = res.data
+    }).catch(error=>{
+    })
+}
+const changeCollectionStatus = () =>{
+    request.put('/book/collection',null,{params:{
+        bid : bid.value,
+        uid : store.getters.getUserId
+    }}).then(res =>{
+        MyMessage(res.msg,'success')
+        getCollectionStatus()
+        getBookData()
+    }).catch(error=>{
+        MyMessage(error.data.msg,'success')
+    })
 }
 </script>
 <template>
@@ -38,6 +63,7 @@ const getBookData = () => {
             <div class="book-meta">
                 <span>{{ book.aname }} 著</span>
                 <p>更新时间：{{ book.updateTime }}</p>
+                <p>收藏：{{ book.numOfCollection }}</p>
             </div>
             <div class="book-last-chapter">
                 <span>最新章节：</span>
@@ -52,6 +78,17 @@ const getBookData = () => {
                     {{ book.intro }}
                 </template>
             </n-ellipsis>
+            <div class="btns">
+                <n-button v-if="isCollection" @click="changeCollectionStatus" color="rgba(11,175,255,.1)">
+                    取消收藏
+                </n-button>
+                <n-button v-else @click="changeCollectionStatus"  color="rgba(11,175,255,.1)">
+                    加入书架
+                </n-button>
+                <n-button color="#0bafff">
+                    开始阅读
+                </n-button>
+            </div>
         </div>
     </div>
 </template>
@@ -96,6 +133,7 @@ const getBookData = () => {
     font-weight: 500;
     line-height: 36px;
     margin: 0 12px 12px 0;
+    cursor: default;
 }
 
 #main .info .book-meta {
@@ -112,12 +150,14 @@ const getBookData = () => {
 #main .info .book-meta p {
     color: #666;
     margin-right: 12px;
+    cursor: default;
 }
 
 #main .info .book-last-chapter {
     color: #666;
     font-size: 16px;
     margin-bottom: 20px;
+    cursor: default;
 }
 
 #main .info .book-types {
@@ -142,7 +182,8 @@ const getBookData = () => {
     line-height: 24px;
     width: 640px;
 }
-.n-ellipsis.n-ellipsis--cursor-pointer::after{
+
+.n-ellipsis.n-ellipsis--cursor-pointer::after {
     background-color: #fff;
     bottom: 0;
     color: #0bafff;
@@ -150,5 +191,25 @@ const getBookData = () => {
     position: absolute;
     right: 0;
     width: 30px;
+}
+
+#main .info .btns {
+    display: flex;
+    margin-top: 14px;
+}
+#main .info .btns .n-button{
+    width: 134px;
+    margin-right: 20px;
+    border-radius: 22px;
+    font-size: 16px;
+    height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+}
+#main .info .btns .n-button:first-of-type{
+    color: #0bafff;
+}
+#main .info .btns .n-button:last-of-type{
+    color: #fff;
 }
 </style>

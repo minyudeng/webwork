@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import request from '@/axios/request'
 import { useStore } from 'vuex';
 import { MyNotification } from '@/plugins/Message.js'
@@ -25,7 +25,9 @@ const submit = (aname, message) => {
 
             
     }
-
+onMounted(()=>{
+    document.title = '作者申请'
+})
 
 }
 </script>

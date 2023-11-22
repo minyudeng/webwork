@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { MyMessage } from '@/plugins/Message'
+import { MyMessage, MyNotification } from '@/plugins/Message'
 
 const routes = [
   {
@@ -45,15 +45,16 @@ const routes = [
         beforeEnter: (to, from, next) => {
           if (to.meta.isAuth) {
             let user = JSON.parse(sessionStorage.getItem("user"))
+            if ( user == null) {
+              MyMessage('请先登录再试','warning')
+              next(from.path)
+            }
             if (user.role == '管理员') {
               next()
             } else {
               MyMessage('抱歉，您没有权限查看！','warnning')
-              alert('抱歉，您没有权限查看！')
-              next('/home')
+              next(from.path)
             }
-          } else {
-            next()
           }
         }
       }, {
@@ -63,10 +64,15 @@ const routes = [
         beforeEnter: (to, from, next) => {
           if (to.meta.isAuth) {
             let user = JSON.parse(sessionStorage.getItem("user"))
+            if ( user == null) {
+              MyMessage('请先登录再试','warning')
+              next(from.path)
+            }
             if (user.role == '管理员') {
               next()
             } else {
-              next('/home')
+              MyNotification('权限不足','抱歉，你没有权限查看!','warning')
+              next(from.path)
             }
           } else {
             next()
@@ -79,10 +85,14 @@ const routes = [
         beforeEnter: (to, from, next) => {
           if (to.meta.isAuth) {
             let user = JSON.parse(sessionStorage.getItem("user"))
+            if ( user == null) {
+              MyMessage('请先登录再试','warning')
+              next(from.path)
+            }
             if (user.role == '管理员'||user.role == '作者') {
               next()
             } else {
-              alert('抱歉，您没有权限查看！')
+              MyNotification('权限不足','抱歉，你没有权限查看，请先成为作者','warning')
             }
           } else {
             next()
@@ -104,12 +114,10 @@ const routes = [
     beforeEnter: (to, from, next) => {
       if (to.meta.isAuth) { 
         let user = JSON.parse(sessionStorage.getItem("user"))
-        if (user.role == '用户'
-          || user.role == '作者'
-          || user.role == '管理员') {
+        if (user != null) {
           next()
         } else {
-          alert('抱歉，您没有权限查看！')
+          MyMessage('请先登录再试','warning')
           next('/home')
         }
       } else {
@@ -125,14 +133,12 @@ const routes = [
     beforeEnter: (to, from, next) => {
       if (to.meta.isAuth) {
         let user = JSON.parse(sessionStorage.getItem("user"))
-        if (user.role === '管理员'||user.role === '作者'||user.role === '用户') {
+        if ( user != null) {
           next()
         } else {
-          alert('抱歉，您没有权限查看！')
-          next('/home')
+          MyMessage('请先登录再试','warning')
+          next(from.path)
         }
-      } else {
-        next()
       }
     }
   }

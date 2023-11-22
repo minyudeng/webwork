@@ -9,6 +9,7 @@ const store = useStore()
 
 onMounted(() => {
     getBooks()
+    document.title = '作品管理'
 })
 
 //dialog部分

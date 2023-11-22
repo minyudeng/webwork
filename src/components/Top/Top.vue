@@ -1,6 +1,7 @@
 <template>
     <div>
-        <el-menu :default-active="store.getters.getIndex" style="background-color: rgba(245,245,247,.8);" mode="horizontal" :ellipsis="false">
+        <el-menu :default-active="store.getters.getIndex" style="background-color: rgba(245,245,247,.8);" mode="horizontal"
+            :ellipsis="false">
             <span style="width: 200px;"></span>
             <el-menu-item index="1" @click="router.push('/home')">
                 首页
@@ -11,7 +12,7 @@
             </el-menu-item>
             <span style="width: 30px;"></span>
             <el-menu-item index="3" @click="router.push('/square')">
-               书单广场
+                书单广场
             </el-menu-item>
             <el-menu-item index="4" @click="router.push('/bookrank')">
                 排行榜
@@ -47,32 +48,40 @@ const go = () => {
 }
 
 const logOut = () => {
-    router.push("/")
-    nextTick(()=>{
-        store.commit("userStatus", null)//退出同时删除会报错，延时就可以了
-        document.cookie = null
-        MyMessage('登出成功','success')
-    })
+    router.push("/").then(() => {
+        // 在路由跳转完成后执行其他操作
+        store.commit("userStatus", null);
+        document.cookie = null;
+        MyMessage('登出成功', 'success');
+    });
+    
 }
 </script>
 <style scoped>
 .flex-grow {
     flex-grow: 1;
 }
+
 .el-menu--horizontal>.el-menu-item.is-active {
-    border-bottom: 1px solid rgb(11,175,255);
-    color: var(--el-menu-active-color)!important;
-    background: linear-gradient(90deg, rgba(11, 174, 255, 0.373) 50%, transparent 50%); /* 渐变边框 */
-    background-size: 200% 100%; /* 设置渐变宽度 */
-    background-position: 100%; /* 设置渐变位置 */
-    transition: background-position 0.8s; /* 添加过渡效果 */
+    border-bottom: 1px solid rgb(11, 175, 255);
+    color: var(--el-menu-active-color) !important;
+    background: linear-gradient(90deg, rgba(11, 174, 255, 0.373) 50%, transparent 50%);
+    /* 渐变边框 */
+    background-size: 200% 100%;
+    /* 设置渐变宽度 */
+    background-position: 100%;
+    /* 设置渐变位置 */
+    transition: background-position 0.8s;
+    /* 添加过渡效果 */
 }
-.el-menu--horizontal .el-menu-item:not(.is-disabled):focus, .el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
+
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus,
+.el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
     outline: 0;
     color: var(--el-menu-hover-text-color);
-    background-color: rgb(240,245,249);
+    background-color: rgb(240, 245, 249);
 }
+
 .el-menu--horizontal>.el-sub-menu .el-sub-menu__title:hover {
-    background-color: rgb(240,245,249);
-}
-</style>
+    background-color: rgb(240, 245, 249);
+}</style>

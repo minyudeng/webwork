@@ -22,8 +22,9 @@ onMounted(() => {
     if(store.getters.getIsLogin === false){
         router.push('/home')
         MyMessage('你还没有登录，请先登录账号','error')
-    }else if(store.getters.getUserRole== '作者'){
-        router.push('admin/bookmanage')
+    }else if(store.getters.getUserRole== '作者'||store.getters.getUserRole== '管理员'){
+        console.log(111);
+        router.push('/admin/authorzone/manage')
     }
     
 })

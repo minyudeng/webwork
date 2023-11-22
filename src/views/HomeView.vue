@@ -5,6 +5,7 @@ import { useStore } from 'vuex';
 
 const store = useStore()
 onMounted(() => {
+  document.title = '首页'
   store.dispatch("setIndex", '1')
 })
 </script>
