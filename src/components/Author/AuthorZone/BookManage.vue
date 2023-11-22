@@ -56,7 +56,7 @@ const setImage = (event, bid) => {
         bid: bid
     }).then(res => {
         MyMessage('更新成功', 'success')
-        location.reload()
+        // location.reload()
     }).catch(error => {
         MyNotification('更新失败', '未知错误,请询问管理员', 'error')
     })

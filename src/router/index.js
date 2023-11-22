@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { MyMessage } from '@/plugins/Message'
 
 const routes = [
   {
@@ -47,6 +48,7 @@ const routes = [
             if (user.role == '管理员') {
               next()
             } else {
+              MyMessage('抱歉，您没有权限查看！','warnning')
               alert('抱歉，您没有权限查看！')
               next('/home')
             }
@@ -64,7 +66,6 @@ const routes = [
             if (user.role == '管理员') {
               next()
             } else {
-              alert('抱歉，您没有权限查看！')
               next('/home')
             }
           } else {
@@ -101,7 +102,7 @@ const routes = [
     ],
     meta: { isAuth: true },
     beforeEnter: (to, from, next) => {
-      if (to.meta.isAuth) { //判断是否需要授权
+      if (to.meta.isAuth) { 
         let user = JSON.parse(sessionStorage.getItem("user"))
         if (user.role == '用户'
           || user.role == '作者'
@@ -116,6 +117,24 @@ const routes = [
       }
     },
 
+  },{
+    path:'/book/:id(\\d+)',
+    name:'book',
+    component: ()=>import('@/views/BookView.vue'),
+    meta: { isAuth: true },
+    beforeEnter: (to, from, next) => {
+      if (to.meta.isAuth) {
+        let user = JSON.parse(sessionStorage.getItem("user"))
+        if (user.role === '管理员'||user.role === '作者'||user.role === '用户') {
+          next()
+        } else {
+          alert('抱歉，您没有权限查看！')
+          next('/home')
+        }
+      } else {
+        next()
+      }
+    }
   }
 
 ]

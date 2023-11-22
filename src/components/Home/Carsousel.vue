@@ -1,8 +1,10 @@
 <script setup>
 import { nextTick, onMounted, ref } from 'vue';
 import request from '@/axios/request';
-
 import ColorThief from 'colorthief'
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const imgs = ref([
   require('../../../static/imgs/1679989834707_413772.png'),
@@ -14,25 +16,15 @@ onMounted(() => {
   request.get('/book/last-four')
     .then(res => {
       data.value = res.data
-    })
+      nextTick(() => {
+        const item = document.querySelectorAll('.new .item .i1')
+        item.forEach(i => {
+          startMarquee(i)
+        })
+        changeEnvent(0)
+      })
 
-  // changeEnvent(0)
-  // nextTick(() => {
-  //   const item = document.querySelectorAll('.new .item .i1')
-  //   item.forEach(i => {
-  //     startMarquee(i)
-  //   })
-  // })
-  setTimeout(() => {
-    const item = document.querySelectorAll('.new .item .i1')
-    item.forEach(i => {
-      startMarquee(i)
     })
-    changeEnvent(0)
-  }, 100)
-  nextTick(() => {
-    // 这里可以安全地访问更新后的 DOM
-  })
 })
 
 const colorThief = new ColorThief()
@@ -56,8 +48,7 @@ const startMarquee = () => {
   if (visibility(item)) {
     item.classList.add('move')
   }
-
-};
+}
 
 const stopMarquee = () => {
   const item = document.querySelector('.new .item .i1')
@@ -73,6 +64,15 @@ const visibility = (ev) => {
     return false
   }
 }
+//跳转
+const blankBook = (bid) => {
+  let routeUrl = router.resolve({
+    path: `/book/${bid}`,
+    params: { id: bid }
+  })
+  window.open(routeUrl.href, '_blank')
+}
+
 </script>
 <template>
   <div id="cars">
@@ -89,12 +89,11 @@ const visibility = (ev) => {
         </span>
       </div>
       <div v-for="i in data" :key="i">
-        <div class="item">
+        <div class="item" @click="blankBook(i.bid)">
           <p class="i1" @mouseover="stopMarquee" @mouseout="startMarquee">
             {{ i.bname }}
           </p>
-          <el-popover trigger="hover"
-            :content="i.bname">
+          <el-popover trigger="hover" :content="i.bname">
             <template #reference>
               <el-text class="i2" line-clamp="2">
                 {{ i.intro }}
@@ -109,12 +108,13 @@ const visibility = (ev) => {
   
 <style scoped>
 #cars {
-  height: 440px;
+  height: 500px;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   justify-content: center;
+  justify-content: space-around;
 }
 
 .el-carousel {
@@ -132,9 +132,9 @@ const visibility = (ev) => {
 
 .new {
   height: 100px;
-  margin-top: auto;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 20px;
   display: flex;
   background-color: rgba(236, 244, 249, .6);
   border-radius: 20px;

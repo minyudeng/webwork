@@ -34,9 +34,10 @@
     </div>
 </template>
 <script setup>
-import { inject } from 'vue';
+import { inject, nextTick } from 'vue';
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex';
+import { MyMessage } from '@/plugins/Message';
 const router = useRouter()
 const store = useStore()
 
@@ -45,14 +46,13 @@ const go = () => {
     router.push("/admin");
 }
 
-const message = inject('message')
 const logOut = () => {
     router.push("/")
-    setTimeout(()=>{
+    nextTick(()=>{
         store.commit("userStatus", null)//退出同时删除会报错，延时就可以了
         document.cookie = null
-        message('退出成功','success')
-    },100)
+        MyMessage('登出成功','success')
+    })
 }
 </script>
 <style scoped>
