@@ -26,7 +26,7 @@ const selectd=(index)=>{
                         作品管理  
                     </span>
                     <span @click="selectd('2')">
-                        <el-icon :class="{actived : actived==='2'}"><Comment /></el-icon>
+                        <el-icon :class="{actived : actived==='2'}"><ChatDotSquare /></el-icon>
                         互动管理
                     </span>
                 </div>

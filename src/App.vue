@@ -43,7 +43,7 @@ onMounted(() => {
 })
 </script>
 <style>
-@import url('/src/common/font/font.css');
+@import url('./assets/font/font.css');
 * {
   padding: 0;
   margin: 0;

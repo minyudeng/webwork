@@ -1,6 +1,6 @@
 <script setup>
 import request from '@/axios/request';
-import { nextTick, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { MyMessage } from '@/plugins/Message';
 import { useStore } from 'vuex';
 
@@ -23,29 +23,34 @@ const getBookData = () => {
         .then(res => {
             book.value = res.data
             document.title = book.value.bname
+            console.log(book.value.rating);
         }).catch(error => {
             MyMessage(error.data.msg, 'error')
         })
 }
-const getCollectionStatus = () =>{  
-    request.get('/book/is-collection',{params:{
-        bid : bid.value,
-        uid : store.getters.getUserId
-    }}).then(res =>{
+const getCollectionStatus = () => {
+    request.get('/book/is-collection', {
+        params: {
+            bid: bid.value,
+            uid: store.getters.getUserId
+        }
+    }).then(res => {
         isCollection.value = res.data
-    }).catch(error=>{
+    }).catch(error => {
     })
 }
-const changeCollectionStatus = () =>{
-    request.put('/book/collection',null,{params:{
-        bid : bid.value,
-        uid : store.getters.getUserId
-    }}).then(res =>{
-        MyMessage(res.msg,'success')
+const changeCollectionStatus = () => {
+    request.put('/book/collection', null, {
+        params: {
+            bid: bid.value,
+            uid: store.getters.getUserId
+        }
+    }).then(res => {
+        MyMessage(res.msg, 'success')
         getCollectionStatus()
         getBookData()
-    }).catch(error=>{
-        MyMessage(error.data.msg,'success')
+    }).catch(error => {
+        MyMessage(error.data.msg, 'success')
     })
 }
 </script>
@@ -53,12 +58,20 @@ const changeCollectionStatus = () =>{
     <div id="main">
         <div class="cover">
             <img :src="book.cover" alt="" srcset="">
+            <div class="status" :class="{
+                'ing': book.status === '连载中',
+                'end': book.status === '已完结'
+            }">
+                {{ book.status }}
+            </div>
         </div>
         <div class="info">
             <div class="titie">
                 <h1>
                     {{ book.bname }}
                 </h1>
+                <n-rate readonly :value="book.rating/2" allow-half/>
+                <p>{{ book.rating }}</p>
             </div>
             <div class="book-meta">
                 <span>{{ book.aname }} 著</span>
@@ -82,7 +95,7 @@ const changeCollectionStatus = () =>{
                 <n-button v-if="isCollection" @click="changeCollectionStatus" color="rgba(11,175,255,.1)">
                     取消收藏
                 </n-button>
-                <n-button v-else @click="changeCollectionStatus"  color="rgba(11,175,255,.1)">
+                <n-button v-else @click="changeCollectionStatus" color="rgba(11,175,255,.1)">
                     加入书架
                 </n-button>
                 <n-button color="#0bafff">
@@ -116,15 +129,53 @@ const changeCollectionStatus = () =>{
 #main .cover img {
     vertical-align: middle;
     width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+#main .cover img:hover{
+    transform: scale(1.1); 
+}
+
+#main .cover .status {
+    border-radius: 0 0 6px 0;
+    font-size: 12px;
+    font-weight: 500;
+    height: 18px;
+    left: 0;
+    line-height: 18px;
+    padding: 0 4px;
+    position: absolute;
+    text-align: center;
+    top: 0;
+}
+
+#main .cover .ing {
+    background-color: rgba(128, 198, 242, 0.5);
+}
+
+#main .cover .end {
+    background-color: #57595a83;
 }
 
 #main .info {
-    flex: 1;
     flex: 1;
     font-size: 14px;
     line-height: 20px;
     overflow: hidden;
     position: relative;
+}
+#main .info .titie{
+    display: flex;
+    align-items: center;
+}
+#main .info .titie .n-rate{
+    margin-left: 150px;
+    margin-right: 10px;
+}
+#main .info .titie p{
+    margin-top: 3px;
+    color: #334;
+    font-size: 20px;
+    cursor: default;
 }
 
 #main .info h1 {
@@ -197,7 +248,8 @@ const changeCollectionStatus = () =>{
     display: flex;
     margin-top: 14px;
 }
-#main .info .btns .n-button{
+
+#main .info .btns .n-button {
     width: 134px;
     margin-right: 20px;
     border-radius: 22px;
@@ -206,10 +258,11 @@ const changeCollectionStatus = () =>{
     line-height: 44px;
     padding: 0 20px;
 }
-#main .info .btns .n-button:first-of-type{
+
+#main .info .btns .n-button:first-of-type {
     color: #0bafff;
 }
-#main .info .btns .n-button:last-of-type{
+
+#main .info .btns .n-button:last-of-type {
     color: #fff;
-}
-</style>
+}</style>

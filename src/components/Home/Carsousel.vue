@@ -13,7 +13,7 @@ const imgs = ref([
 const data = ref([])
 
 onMounted(() => {
-  request.get('/book/last-four')
+  request.get('/book/get/last-four')
     .then(res => {
       data.value = res.data
       nextTick(() => {
