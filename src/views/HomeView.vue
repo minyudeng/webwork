@@ -1,6 +1,7 @@
 <script setup>
+import request from '@/axios/request';
 import Carsousel from '@/components/Home/Carsousel.vue';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore()
@@ -8,6 +9,11 @@ onMounted(() => {
   document.title = '首页'
   store.dispatch("setIndex", '1')
 })
+const bookList = ref()
+const getBookList=()=>{
+  
+}
+
 </script>
 <template>
   <div id="main">

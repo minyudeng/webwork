@@ -23,7 +23,6 @@ const getBookData = () => {
         .then(res => {
             book.value = res.data
             document.title = book.value.bname
-            console.log(book.value.rating);
         }).catch(error => {
             MyMessage(error.data.msg, 'error')
         })

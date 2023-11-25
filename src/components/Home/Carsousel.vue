@@ -17,10 +17,6 @@ onMounted(() => {
     .then(res => {
       data.value = res.data
       nextTick(() => {
-        const item = document.querySelectorAll('.new .item .i1')
-        item.forEach(i => {
-          startMarquee(i)
-        })
         changeEnvent(0)
       })
 
@@ -41,28 +37,6 @@ const changeColor = async (img) => {
 const changeEnvent = (i) => {
   let img = document.querySelectorAll('.el-carousel__item img')
   changeColor(img[i])
-}
-//
-const startMarquee = () => {
-  const item = document.querySelector('.new .item .i1')
-  if (visibility(item)) {
-    item.classList.add('move')
-  }
-}
-
-const stopMarquee = () => {
-  const item = document.querySelector('.new .item .i1')
-  item.classList.remove('move')
-}
-const visibility = (ev) => {
-  const ev_weight = ev.scrollWidth; // 文本的实际宽度   scrollWidth：对象的实际内容的宽度，不包边线宽度，会随对象中内容超过可视区后而变大。
-  const content_weight = ev.clientWidth;// 文本的可视宽度 clientWidth：对象内容的可视区的宽度，不包滚动条等边线，会随对象显示大小的变化而改变。
-  if (ev_weight > content_weight) {
-    // 实际宽度 > 可视宽度  文字溢出
-    return true
-  } else {
-    return false
-  }
 }
 //跳转
 const blankBook = (bid) => {
@@ -90,7 +64,7 @@ const blankBook = (bid) => {
       </div>
       <div v-for="i in data" :key="i">
         <div class="item" @click="blankBook(i.bid)">
-          <p class="i1" @mouseover="stopMarquee" @mouseout="startMarquee">
+          <p class="i1">
             {{ i.bname }}
           </p>
           <el-popover trigger="hover" :content="i.bname">

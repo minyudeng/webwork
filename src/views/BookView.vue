@@ -1,6 +1,6 @@
 <script setup>
 import Detail from '@/components/Book/Detail.vue'
-import Comment from '@/components/Book/BookComment.vue';
+import BookComment from '@/components/Book/BookComment.vue';
 import Other from '@/components/Book/Other.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -20,7 +20,7 @@ const bid = ref(router.currentRoute._rawValue.params.id)
         <div id="cantain">
             <div style="width: 1200px;margin: 0 auto;display: flex;">
                 <div class="left">
-                    <Comment :bid="bid"/>
+                    <BookComment :bid="bid"/>
                 </div>
                 <div class="right">
                     <Other :bid="bid"/>
