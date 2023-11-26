@@ -141,7 +141,16 @@ const routes = [
         }
       }
     }
-  }
+  },
+  {//404设置
+    path: '/404',
+    name: '404',
+    component: () => import('/src/components/Other/404.vue')
+},
+{
+    path: '/:pathMatch(.*)',
+    redirect: '/404'
+}
 
 ]
 

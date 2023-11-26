@@ -51,6 +51,10 @@ onMounted(() => {
   font-family: Arial;
   box-sizing: border-box;
 }
+.el-input__inner,.el-textarea__inner,input {
+  caret-color: auto !important;
+}
+
 html, body {
   height: 100%;
 }
