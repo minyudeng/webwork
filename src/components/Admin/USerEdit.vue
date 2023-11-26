@@ -55,7 +55,7 @@ onBeforeMount(() => {
 })
 
 const submit = () => {
-    request.post('/update', user.value)
+    request.post('/user/update', user.value)
         .then((res) => {
             sessionStorage.setItem("user", JSON.stringify(res.data))
             sessionStorage.setItem("userToken", res.data.token)

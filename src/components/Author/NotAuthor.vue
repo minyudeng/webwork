@@ -16,7 +16,7 @@ const submit = (aname, message) => {
             MyNotification("申请信息太短！", "怎么也得十个字吧？","error")
         }
     } else {
-        request.post('/addapply', {"uid": store.state.user.uid, aname, message })
+        request.post('/apply/add', {"uid": store.state.user.uid, aname, message })
             .then((res) => {
                 MyNotification("申请成功","请等待管理员审核","success")
             }).catch(error=>{

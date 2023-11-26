@@ -159,7 +159,7 @@ const applystatus = (i) => {
     }
 }
 const getLike = () => {
-    request.get('/getApply', {
+    request.get('/apply/get', {
         params: {
             likename: key.value,
             audit: statuscode.value
@@ -175,7 +175,7 @@ onMounted(() => {
 
 })
 const pendingApply = (audit, uid) => {
-    request.put('/updateaudit', { audit, uid })
+    request.put('/apply/update/audit', { audit, uid })
         .then(res => {
             MyMessage("更新成功", "success")
             getLike()

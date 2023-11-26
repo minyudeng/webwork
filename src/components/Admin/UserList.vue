@@ -22,7 +22,7 @@ const setSelectRole = (value) => {
 }
 
 const getLike = () => {
-    request.get('/getByLikeName', {
+    request.get('/user/get', {
         params: {
             likename: userkey.value,
             role: selectRole.value,
@@ -34,7 +34,7 @@ const getLike = () => {
 }
 
 const setRole = (username, role) => {
-    request.post('/updaterole', { username, role })
+    request.post('/user/update/role', { username, role })
         .then((res) => {
             setRoleSuccess(username)
             getLike()
