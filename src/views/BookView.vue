@@ -4,13 +4,22 @@ import BookComment from '@/components/Book/BookComment.vue';
 import Other from '@/components/Book/Other.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import request from '@/axios/request';
+import { useStore } from 'vuex';
 
 const router = useRouter()
+const store = useStore()
 onMounted(() => {
-
+    readHistory()
 })
-
 const bid = ref(router.currentRoute._rawValue.params.id)
+
+const readHistory = () =>{
+    request.putForm('/user/book-history',{
+        'bid' : bid.value,
+        'uid' : store.getters.getUserId
+    })
+}
 </script>
 <template>
     <div id="main">

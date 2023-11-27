@@ -3,6 +3,7 @@ import request from '@/axios/request';
 import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { MyNotification, MyMessage } from '@/plugins/Message.js';
+import matchFileType from '@/plugins/File';
 
 const store = useStore()
 //是否是创建书籍
@@ -38,7 +39,7 @@ onMounted(() => {
         })
     }
     //获得类型列表
-    request.get('/book/typelist')
+    request.get('/type/get')
         .then(res => {
             typeList.value = res.data
         })
@@ -53,8 +54,8 @@ const fileInputClick = () => {
 }
 const handleFileChange = (event) => {
     file.value = event.target.files[0];
-    if(matchFileType(file.value.name) !== 'image'){
-        MyMessage('上传的文件必须是文件','warning')
+    if(matchFileType(file.value.name) != 'image'){
+        MyMessage('上传的文件必须是图片','warning')
         return
     }
     if (file) {
@@ -70,20 +71,20 @@ const myTypeList = ref([])
 const rules = {
     bname: [
         { required: true, message: "请输入书名", trigger: "blur" },
-        { min: 1, max: 20, message: '长度应在1-20', trigger: 'blur' },
+        { min: 1, max: 50, message: '长度应在1-50', trigger: 'blur' },
     ],
     intro: [
         { required: true, message: "请输入简介", trigger: "blur" },
-        { min: 5, max: 200, message: '长度应在5-200', trigger: 'blur' },
+        { min: 5, max: 500, message: '长度应在5-500', trigger: 'blur' },
     ]
 }
 //提交
 const submit = () => {
     if (book.value.bname == null) {
-        MyNotification("书名长度不符", '书名长度应在1-20!', 'error')
+        MyNotification("书名长度不符", '书名长度应在1-50!', 'error')
         return
     }
-    if (book.value.intro == null || book.value.intro.length < 5 || book.value.intro > 200) {
+    if (book.value.intro == null || book.value.intro.length < 5 || book.value.intro > 500) {
         MyNotification("简介长度不符", '简介长度应在1-20!', 'error')
         return
     }
@@ -163,12 +164,12 @@ const submit = () => {
                     </span>
                 </div>
                 <el-form-item label="书名:" prop="bname">
-                    <el-input v-model="book.bname" placeholder="" minlength="1" maxlength="20" show-word-limit>
+                    <el-input v-model="book.bname" placeholder="" minlength="1" maxlength="50" show-word-limit>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="简介:" prop="intro">
                     <el-input v-model="book.intro" type="textarea" placeholder="" :autosize="{ minRows: 4, maxRows: 6 }"
-                        maxlength="200" show-word-limit>
+                        maxlength="500" show-word-limit>
                     </el-input>
                 </el-form-item>
                 <el-form-item label="类型" prop="">

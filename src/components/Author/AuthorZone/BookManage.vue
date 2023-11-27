@@ -66,7 +66,7 @@ const setImage = (event, bid) => {
 //更新状态
 const setStatus=(status,bid)=>{
     console.log(status,bid)
-    request.putForm('/book/updatestatus',{
+    request.putForm('/book/update/status',{
         status : status,
         bid : bid
     }).then(res=>{
@@ -93,7 +93,7 @@ const setStatus=(status,bid)=>{
             <el-divider style="margin:0;background-color: #fff;" />
             <div class="body">
                 <ul>
-                    <li v-for="(item, index) in books" :key="index">
+                    <li v-for="(item, index) in books" :key="index" >
                         <div>
                             <el-image :src="item.cover">
                                 <template #error>
@@ -107,21 +107,22 @@ const setStatus=(status,bid)=>{
                             <input type="file" class="file-btn" required @change="setImage($event, item.bid)" />
                         </div>
 
-                        <el-row style="
+                        <div style="
                         width: 100%;
-                        display: flex;
+                        display: inline-flex;
+                        height: 148px;
+                        min-height: 144px;
                         flex-direction: row;
-                        justify-content: space-around;">
-                            <div :span="16" style="display: flex;
-                            flex-direction: column;
-                            justify-content: space-around;">
+                        justify-content: space-between;">
+                            <div :span="16" style="display: inline-flex;
+                            flex-direction: column;">
                                 <h3>{{ item.bname }}</h3>
-                                <p style="color: rgba(21,26,48,.5);">{{ item.updateTime }}</p>
-                                <p style="color: rgba(21,26,48,.5);">收藏 {{ item.collection }}</p>
+                                <p style="color: rgba(21,26,48,.5);margin-top: 30px;">{{ item.updateTime }}</p>
+                                <p style="color: rgba(21,26,48,.5);margin-top: 30px;">收藏 {{ item.collection }}</p>
                             </div>
-                            <div style="display: flex;
+                            <div style="display: inline-flex;
                             flex-direction: column;
-                            justify-content: space-around;">
+                            justify-content: space-between;">
                                 <el-popover v-if="item.status === '连载中'" placement="top" trigger="click">
                                     <template #reference>
                                         <el-button>连载中</el-button>
@@ -135,7 +136,8 @@ const setStatus=(status,bid)=>{
                                     <el-button>去写作</el-button>
                                 </div>
                             </div>
-                        </el-row>
+                        </div>
+                        
                     </li>
                 </ul>
             </div>
@@ -202,6 +204,7 @@ const setStatus=(status,bid)=>{
     position: relative;
     border-color: rgba(21, 26, 48, .08);
     margin-bottom: 18px;
+    border-bottom: #69696a61 solid 1px;
 }
 
 .el-image {
@@ -223,14 +226,13 @@ const setStatus=(status,bid)=>{
 }
 
 .body ul li .el-button {
-    margin-top: 80px;
     width: 80px;
 }
 
 .file-btn {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 107px;
+    height: 114px;
     top: 0;
     left: 0;
     outline: none;

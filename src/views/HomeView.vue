@@ -8,10 +8,19 @@ const store = useStore()
 onMounted(() => {
   document.title = '首页'
   store.dispatch("setIndex", '1')
+  getBookList()
 })
 const bookList = ref()
-const getBookList=()=>{
-  
+const getBookList = () => {
+  request.get('/book/get', {
+    params: {
+      'pageNum': 1,
+      'pageSize': 6,
+      'orderBy': 'rating asc'
+    }
+  }).then(res => {
+    bookList.value = res.data.list
+  })
 }
 
 </script>
@@ -24,17 +33,16 @@ const getBookList=()=>{
       精选 >>
     </span>
     <div class="list">
-      <div v-for="i in 6">
-        <a href="">
+      <div v-for="(item, index) in bookList">
+        <div class="msg">
           <div class="book">
-            <img src="" alt="" srcset="">
+            <img :src="item.cover" alt="" srcset="">
           </div>
-          <p class="name">书名书名</p>
+          <p class="name">{{ item.bname }}</p>
           <p class="intro name">
-            简介简介斤斤计较急急急急急急急急急急急急急
-            急急急急急急急急急急急急急急急急急急急急急急急急急急
+            {{ item.intro }}
           </p>
-        </a>
+        </div>
       </div>
     </div>
   </div>
@@ -81,12 +89,13 @@ const getBookList=()=>{
   height: 351px;
 }
 
-.list a {
+.list .msg {
   cursor: pointer;
   width: 130px;
+  overflow: hidden;
 }
 
-.list a .book {
+.list .msg.book {
   border: 1px solid rgba(51, 51, 51, .08);
   border-radius: 6px;
   height: 173px;
@@ -96,7 +105,19 @@ const getBookList=()=>{
   box-shadow: 0 4px 8px rgba(51, 51, 51, .08);
 }
 
-.list a .name {
+.list .msg .book img {
+  vertical-align: middle;
+  border-radius: 6px;
+  height: 173px;
+  width: 130px;
+  transition: transform 0.5s ease-in-out;
+}
+
+.list .msg .book img:hover {
+  transform: scale(1.1);
+}
+
+.list .msg .name {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   display: -webkit-box;
@@ -110,10 +131,12 @@ const getBookList=()=>{
   max-height: 44px;
   transition: all 0.3s ease-in-out;
 }
-.list a .name:hover{
+
+.list .msg .name:hover {
   color: #0bafff;
 }
-.list a .intro {
+
+.list .msg .intro {
   color: #666;
   font-size: 12px;
   line-height: 16px;

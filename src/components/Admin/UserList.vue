@@ -21,15 +21,24 @@ const setSelectRole = (value) => {
     selectRole.value = value
 }
 
-const getLike = () => {
-    request.get('/user/get', {
+
+//分页
+const pageNum = ref(1)
+const pageSize = ref(5)
+const pages = ref(1)//总页数
+
+const getUserList = () => {
+    request.get('/user/get/list', {
         params: {
-            likename: userkey.value,
-            role: selectRole.value,
+            'likename': userkey.value,
+            'role': selectRole.value,
+            'pageNum': pageNum.value,
+            'pageSize': pageSize.value,
         }
     })
         .then(res => {
-            setUserList(res.data)
+            pages.value = res.data.pages
+            setUserList(res.data.list)
         })
 }
 
@@ -37,7 +46,7 @@ const setRole = (username, role) => {
     request.post('/user/update/role', { username, role })
         .then((res) => {
             setRoleSuccess(username)
-            getLike()
+            getUserList()
         })
 }
 
@@ -47,7 +56,7 @@ const setRoleSuccess = (username) => {
 </script>
 
 <template>
-    <div class="common-layout">
+    <div id="main">
         <el-container>
             <el-header style="border-bottom: solid 1px var(--el-menu-border-color);">
                 <el-row class="top">
@@ -65,7 +74,7 @@ const setRoleSuccess = (username) => {
                         <el-row class="top" style="height: 50px;background-color: rgb(249,250,251);" j
                             ustify="space-between">
                             <el-col :span="5" style="padding-left: 8px;">
-                                <el-input v-model="userkey" :change=getLike() placeholder="输入关键词查询" clearable>
+                                <el-input v-model="userkey" :change=getUserList() placeholder="输入关键词查询" clearable>
                                     <template #prefix>
                                         <el-icon>
                                             <search />
@@ -143,6 +152,20 @@ const setRoleSuccess = (username) => {
                                 </el-col>
                             </el-row>
                         </div>
+                        <div class="page">
+                            <n-pagination v-model:page="pageNum" 
+                            v-model:page-size="pageSize" 
+                            :page-count="pages"
+                            show-quick-jumper 
+                            show-size-picker 
+                            :page-sizes="[5, 10, 15, 20]" 
+                            size="large"
+                            :display-order="['quick-jumper', 'pages', 'size-picker']">
+                                <template #goto>
+                                    跳转至
+                                </template>
+                            </n-pagination>
+                        </div>
                     </div>
                 </div>
             </el-main>
@@ -156,13 +179,12 @@ const setRoleSuccess = (username) => {
 
 .el-main {
     padding: 0;
-    background-color: rgb(250, 255, 255);
     width: 100%;
     height: 100%;
 }
 
 #contain {
-    padding: 40px;
+    margin: 40px;
 }
 
 .top.el-row {
@@ -201,5 +223,12 @@ const setRoleSuccess = (username) => {
 
 .blocked-role {
     color: crimson;
+}
+
+.page {
+    display: flex;
+    justify-content: flex-end;
+    background-color: rgb(249, 250, 251);
+    height: 100;
 }
 </style>

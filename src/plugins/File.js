@@ -35,7 +35,7 @@ export default function matchFileType(fileName) {
 
   let fileTypeList = [
     // 图片类型
-    {'typeName': 'image', 'types': ['png', 'jpg', 'jpeg', 'bmp', 'gif']},
+    {'typeName': 'image', 'types': ['png', 'jpg', 'jpeg', 'bmp', 'gif','webp']},
     // 文本类型
     {'typeName': 'txt', 'types': ['txt']},
     // excel类型

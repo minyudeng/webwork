@@ -87,7 +87,7 @@ const likeSubCmt = (subcmtId) => {
                         </div>
                     </div>
                 </div>
-                <p>{{ item.content }}</p>
+                <p style="white-space: pre-line;">{{ item.content }}</p>
                 <div class="reply">
                     <span @click="likeSubCmt(item.subcmtId)">
                         <svg v-if="item.liked == false" t="1700839723805" class="icon" viewBox="0 0 1024 1024" version="1.1"

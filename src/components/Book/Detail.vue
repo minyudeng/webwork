@@ -87,7 +87,7 @@ const changeCollectionStatus = () => {
             </div>
             <n-ellipsis data-txt="展开" expand-trigger="click" line-clamp="2" :tooltip="false">
                 <template #default>
-                    {{ book.intro }}
+                    <p style="white-space: pre-line;">{{ book.intro }}</p>
                 </template>
             </n-ellipsis>
             <div class="btns">

@@ -13,16 +13,22 @@ const imgs = ref([
 const data = ref([])
 
 onMounted(() => {
-  request.get('/book/get/last-four')
-    .then(res => {
-      data.value = res.data
+  getBooks()
+})
+const getBooks = () =>{
+  request.get('/book/get', {
+    params: {
+      'pageNum': 1,
+      'pageSize': 4,
+      'orderBy': 'created_at desc'
+    }
+  }).then(res => {
+    data.value = res.data.list
       nextTick(() => {
         changeEnvent(0)
       })
-
-    })
-})
-
+  })
+}
 const colorThief = new ColorThief()
 const changeColor = async (img) => {
   // 得到图片的前三种主要颜色
