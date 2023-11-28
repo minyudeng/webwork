@@ -6,7 +6,7 @@ const router = useRouter()
 const changeactiveIndex = inject("changeactiveIndex")
 
 onMounted(() => {
-    changeactiveIndex('2')
+    changeactiveIndex('3')
 })
 //点击左侧逻辑
 const actived = ref('1')

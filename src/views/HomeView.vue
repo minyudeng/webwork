@@ -2,9 +2,11 @@
 import request from '@/axios/request';
 import Carsousel from '@/components/Home/Carsousel.vue';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 const store = useStore()
+const router = useRouter()
 onMounted(() => {
   document.title = '首页'
   store.dispatch("setIndex", '1')
@@ -16,25 +18,31 @@ const getBookList = () => {
     params: {
       'pageNum': 1,
       'pageSize': 6,
-      'orderBy': 'rating asc'
+      'orderBy': 'rating desc'
     }
   }).then(res => {
     bookList.value = res.data.list
   })
 }
-
+const blankBook = (bid) => {
+  let routeUrl = router.resolve({
+    path: `/book/${bid}`,
+    params: { id: bid }
+  })
+  window.open(routeUrl.href, '_blank')
+}
 </script>
 <template>
   <div id="main">
     <Carsousel />
   </div>
   <div class="contain">
-    <span class="my-span">
+    <span @click="router.push('/bookrank')" class="my-span">
       精选 >>
     </span>
     <div class="list">
       <div v-for="(item, index) in bookList">
-        <div class="msg">
+        <div class="msg" @click="blankBook(item.bid)">
           <div class="book">
             <img :src="item.cover" alt="" srcset="">
           </div>

@@ -14,6 +14,7 @@ const activeIndex = ref(1)
 const selectIndex = (index) => {
     activeIndex.value = index
 }
+
 </script>
 <template>
     <div id="main">

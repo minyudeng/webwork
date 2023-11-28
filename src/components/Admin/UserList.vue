@@ -8,7 +8,7 @@ const userkey = ref('')
 const changeactiveIndex = inject("changeactiveIndex")
 onMounted(() => {
     document.title = '用户管理'
-    changeactiveIndex('3')
+    changeactiveIndex('4')
 })
 
 const userList = ref([])

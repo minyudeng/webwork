@@ -171,7 +171,7 @@ const getLike = () => {
 
 onMounted(() => {
     document.title = '作者申请'
-    changeactiveIndex('4')
+    changeactiveIndex('5')
 
 })
 const pendingApply = (audit, uid) => {

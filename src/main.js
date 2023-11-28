@@ -5,6 +5,7 @@ import store from './store'
 import 'element-plus/dist/index.css'
 import elementIcon from "./plugins/icons"
 
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 const app = createApp(App)
 app

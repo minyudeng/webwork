@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@vueuse/core": "^10.6.1",
     "axios": "^1.5.1",
     "colorthief": "^2.4.0",
     "core-js": "^3.8.3",

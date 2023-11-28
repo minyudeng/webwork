@@ -1,8 +1,8 @@
 <template>
-  <div style="height: 100%;display: flex;
+  <div class="dark" style="height: 100%;display: flex;
   flex-direction: column;">
       <div style="flex-shrink: 0;">
-        <Top/>
+        <Top :toggleDark="toggleDark" :isDark="isDark"/>
       </div>
     <div style="flex-grow: 1; overflow: auto;">
       <RouterView />
@@ -17,6 +17,12 @@ import Top from './components/Top/Top.vue';
 import LoginView from './views/LoginView.vue';
 import { provide, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+
+import { useDark, useToggle } from '@vueuse/core'
+
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
+
 
 const store = useStore()
 const dialogVisible = ref(false)
@@ -44,6 +50,10 @@ onMounted(() => {
 </script>
 <style>
 @import url('./assets/font/font.css');
+html.dark {
+  /* 自定义深色背景颜色 */
+  --af-bg-color: #000000;
+}
 * {
   padding: 0;
   margin: 0;

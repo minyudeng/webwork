@@ -12,21 +12,25 @@
                         </el-icon>
                         <span>个人资料</span>
                     </el-menu-item>
+                    <el-menu-item index="2" @click="router.push('/admin/book-shelf')">
+                        <el-icon><Collection /></el-icon>                        
+                        <span>我的书架</span>
+                    </el-menu-item>
                     <el-menu-item v-if="store.getters.getUserRole === '管理员' || store.getters.getUserRole === '作者'"
-                        @click="router.push('/admin/authorzone/manage')" index="2">
+                        @click="router.push('/admin/authorzone/manage')" index="3">
                         <el-icon>
                             <EditPen />
                         </el-icon>
                         <span>书籍管理</span>
                     </el-menu-item>
-                    <el-menu-item v-if="store.getters.getUserRole === '管理员'" index="3"
+                    <el-menu-item v-if="store.getters.getUserRole === '管理员'" index="4"
                         @click="router.push('/admin/userlist')">
                         <el-icon>
                             <UserFilled />
                         </el-icon>
                         <span>用户列表</span>
                     </el-menu-item>
-                    <el-menu-item v-if="store.getters.getUserRole === '管理员'" index="4"
+                    <el-menu-item v-if="store.getters.getUserRole === '管理员'" index="5"
                         @click="router.push('/admin/applylist')">
                         <el-icon>
                             <Tickets />

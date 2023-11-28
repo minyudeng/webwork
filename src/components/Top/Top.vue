@@ -18,6 +18,16 @@
                 排行榜
             </el-menu-item>
             <div class="flex-grow" />
+            <div class="my-dark">
+                <n-switch v-model:value="darkd" size="large" @click="toggleDark()">
+                    <template #checked-icon>
+                        <el-icon><Hide/></el-icon>
+                    </template>
+                    <template #unchecked-icon>
+                        <el-icon><View /></el-icon>
+                    </template>
+                </n-switch>
+            </div>
             <el-menu-item index="5" @click="router.push('/author')">
                 作者专区
             </el-menu-item>
@@ -35,12 +45,17 @@
     </div>
 </template>
 <script setup>
-import { inject, nextTick } from 'vue';
+import { inject, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex';
 import { MyMessage } from '@/plugins/Message';
 const router = useRouter()
 const store = useStore()
+const props = defineProps({
+    toggleDark: Function,
+    isDark: Boolean
+})
+const darkd = ref(false)
 
 const changeDialogVisible = inject('changeDialogVisible')
 const go = () => {
@@ -54,7 +69,7 @@ const logOut = () => {
         document.cookie = null;
         MyMessage('登出成功', 'success');
     });
-    
+
 }
 </script>
 <style scoped>
@@ -84,4 +99,8 @@ const logOut = () => {
 
 .el-menu--horizontal>.el-sub-menu .el-sub-menu__title:hover {
     background-color: rgb(240, 245, 249);
-}</style>
+}
+.my-dark{
+    margin: 15px 10px;
+}
+</style>

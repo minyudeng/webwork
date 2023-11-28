@@ -9,34 +9,21 @@ const props = defineProps({
 })
 const store = useStore()
 const bid = ref(props.bid)
-const isCollection = ref()
 const book = ref({
     cover: null,
 })
 
 onMounted(() => {
     getBookData()
-    getCollectionStatus()
 })
 const getBookData = () => {
-    request.get(`/book/${bid.value}`)
+    request.get(`/book/${bid.value}`,{params:{'uid' : store.getters.getUserId}})
         .then(res => {
             book.value = res.data
             document.title = book.value.bname
         }).catch(error => {
             MyMessage(error.data.msg, 'error')
         })
-}
-const getCollectionStatus = () => {
-    request.get('/book/is-collection', {
-        params: {
-            bid: bid.value,
-            uid: store.getters.getUserId
-        }
-    }).then(res => {
-        isCollection.value = res.data
-    }).catch(error => {
-    })
 }
 const changeCollectionStatus = () => {
     request.put('/book/collection', null, {
@@ -46,10 +33,9 @@ const changeCollectionStatus = () => {
         }
     }).then(res => {
         MyMessage(res.msg, 'success')
-        getCollectionStatus()
         getBookData()
     }).catch(error => {
-        MyMessage(error.data.msg, 'success')
+        MyMessage("未知错误", 'error')
     })
 }
 </script>
@@ -91,7 +77,7 @@ const changeCollectionStatus = () => {
                 </template>
             </n-ellipsis>
             <div class="btns">
-                <n-button v-if="isCollection" @click="changeCollectionStatus" color="rgba(11,175,255,.1)">
+                <n-button v-if="book.collection" @click="changeCollectionStatus" color="rgba(11,175,255,.1)">
                     取消收藏
                 </n-button>
                 <n-button v-else @click="changeCollectionStatus" color="rgba(11,175,255,.1)">

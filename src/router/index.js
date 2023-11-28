@@ -37,6 +37,10 @@ const routes = [
       {
         path: 'detail',
         component: () => import('../components/Admin/UserDetail.vue')
+      },{
+        path: 'book-shelf',
+        name: 'bookShelf',
+        component: () => import('../components/Admin/BookShelf.vue')
       },
       {
         path: 'userlist',
