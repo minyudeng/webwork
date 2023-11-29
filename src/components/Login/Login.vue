@@ -6,7 +6,7 @@
             </el-input>
         </el-form-item>
         <el-form-item prop="password">
-            <el-input prefix-icon="Lock" type="password" placeholder="请输入密码" v-model="user.password">
+            <el-input @keyup.enter="login" prefix-icon="Lock" type="password" placeholder="请输入密码" v-model="user.password">
             </el-input>
         </el-form-item>
 

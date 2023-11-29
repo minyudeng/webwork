@@ -14,7 +14,7 @@
             </el-input>
         </el-form-item>
         <el-form-item prop="email">
-            <el-input prefix-icon="Lock" placeholder="请输入邮箱" v-model="user.email">
+            <el-input @keyup.enter="signUp(user)" prefix-icon="Lock" placeholder="请输入邮箱" v-model="user.email">
             </el-input>
         </el-form-item>
         <el-form-item>

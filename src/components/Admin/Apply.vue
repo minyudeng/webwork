@@ -74,10 +74,9 @@
                                         </el-col>
 
                                         <el-col :span="8" style="
-                                    height: 60px;
-                                    color: #3e606f;
-                                    font-size: 30px;
-                                    ">
+                                            height: 60px; ·
+                                            color: #3e606f;
+                                            font-size: 30px;">
                                             {{ data.username }}
                                         </el-col>
                                     </el-row>
