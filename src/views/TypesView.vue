@@ -21,6 +21,6 @@ onMounted(() => {
     min-width: 1200px;
     margin: 40px auto;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 </style>
