@@ -36,8 +36,6 @@ const selectRankTag = (s) => {
 
 
 }
-
-
 </script>
 <template>
     <div class="top">
