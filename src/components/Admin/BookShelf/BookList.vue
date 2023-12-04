@@ -1,13 +1,17 @@
 <script setup>
+
 import request from '@/axios/request';
+import { MyConfirmElMessageBox, MyMessage } from '@/plugins/Message';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+import qs from 'qs'
 
 const store = useStore()
 const router = useRouter()
 const props = defineProps({
-    shelfId: Number
+    shelfId: Number,
+    options: Object
 })
 
 onMounted(() => {
@@ -24,6 +28,8 @@ const getBookList = () => {
     request.get(`/book-shelf/get/${shelfId.value}`)
         .then(res => {
             BookList.value = res.data
+        }).finally(() => {
+            checkBid.value = BookList.value.map(book => book.shelfId)
         })
 }
 const getCollectionBookList = () => {
@@ -33,22 +39,92 @@ const getCollectionBookList = () => {
         }
     }).then(res => {
         BookList.value = res.data
+    }).finally(() => {
+        allBid.value = BookList.value.map(book => book.bid)
     })
 }
+const delBooks = () => {
+    if (checkBid.value.length === 0) {
+        MyMessage('至少选择删除一本书', 'warning')
+        return
+    }
+    MyConfirmElMessageBox('你确定要从书架中删除这些书吗', 'warning', () => {
+        let list = new Array()
+        checkBid.value.forEach((e, i) => list[i] = e)
+        console.log(list);
+        console.log(typeof (list));
+        let param = {
+            'shelfId': shelfId.value,
+            'uid': store.getters.getUserId,
+            'bidList': list
+        };
+        request.postForm('/book-shelf/del', param)
+            .then(res => {
+                MyMessage('删除成功', 'success')
+                location.reload()
+            }).catch(e => {
+                console.log(e)
+                MyMessage('删除失败', 'error')
+            })
+
+        // let queryString = qs.stringify(param, { arrayFormat: 'repeat' })
+        // let queryString = JSON.stringify(param)
+        // console.log(queryString);
+        // request.delete(`/book-shell/del`,{params:param})
+        // .then(res => {
+        //     MyMessage('删除成功', 'success')
+        //     location.reload()
+        // }).catch(e => {
+        //     console.log(e)
+        //     MyMessage('删除失败', 'error')
+        // })
+    })
+
+}
 //按钮部分
+const checkAll = ref(false)
+const isIndeterminate = ref(true)
+const allBid = ref([])
+const checkBid = ref([])
+
 const showBtn = ref(false)
-const delBookList = ref([])
 const changeShowBtn = () => {
     showBtn.value = showBtn.value === true
         ? false : true
 }
-
+const handleCheckedChange = (value) => {
+    const checkedCount = value.length
+    checkAll.value = checkedCount === BookList.value.length
+    isIndeterminate.value = checkedCount > 0 && checkedCount < BookList.value.length
+}
+const handleCheckAllChange = (val) => {
+    checkBid.value = val ? allBid.value : []
+    isIndeterminate.value = false
+}
 const blankBook = (bid) => {
     let routeUrl = router.resolve({
         path: `/book/${bid}`,
         params: { id: bid },
     })
     window.open(routeUrl.href, '_blank')
+}
+const clickCheck = () => {
+    event.stopPropagation()
+}
+const handleSelect = (key)=>{
+    console.log(key,checkBid.value)
+    if (checkBid.value.length < 1) {
+        MyMessage('至少加入一本书','warning')
+        return
+    }
+    request.postForm('/book-shelf/add',{
+        'shelfId' : key,
+        'bidList' : checkBid.value
+    }).then(res=>{
+        MyMessage(res.msg,'success')
+    }).catch(e=>{
+        MyMessage('添加失败','error')
+    })
 }
 </script>
 <template>
@@ -62,16 +138,45 @@ const blankBook = (bid) => {
                     编辑
                 </n-button>
             </div>
-            <div v-if="showBtn">
+            <div style="height: 32px;" v-if="showBtn">
+                <n-dropdown trigger="click" :options="props.options" :show-arrow="true" @select="handleSelect">
+                    <n-button round style="width: 100px;margin-right: 20px;">
+                        加入到书单
+                    </n-button>
+                </n-dropdown>
+
                 <n-button round color="#0bafff">
-                    全选
+                    <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
+                        全选
+                    </el-checkbox>
                 </n-button>
-                <n-button round color="#fa573e" style="margin-left: 20px;">
-                    删除({{ delBookList.length }}本)
+                <n-button @click="delBooks" round color="#fa573e" style="margin-left: 20px;">
+                    删除({{ checkBid.length }}本)
                 </n-button>
             </div>
         </div>
         <div class="books">
+            <el-checkbox-group style="display: flex;
+            flex-wrap: wrap;
+            width: 100%" v-model="checkBid" @change="handleCheckedChange">
+                <div v-for="(item, index) in BookList" class="book">
+                    <div class="cover" @click="blankBook(item.bid)">
+                        <img :src="item.cover" alt="">
+                        <div class="status">
+                            {{ item.status }}
+                        </div>
+                        <el-checkbox v-if="showBtn" class="check" :label="item.bid" @click="clickCheck">
+                            {{ }}
+                        </el-checkbox>
+                    </div>
+                    <div class="name">
+                        {{ item.bname }}
+                    </div>
+
+                </div>
+            </el-checkbox-group>
+        </div>
+        <!-- <div class="books">
             <div v-for="(item, index) in BookList" class="book">
                 <div class="cover" @click="blankBook(item.bid)">
                     <img :src="item.cover" alt="">
@@ -84,9 +189,7 @@ const blankBook = (bid) => {
                 </div>
 
             </div>
-        </div>
-
-
+        </div> -->
     </div>
 </template>
 <style scoped>
@@ -170,5 +273,19 @@ const blankBook = (bid) => {
     width: 38px;
     border-radius: 0 0 6px 6px;
     background-color: red;
+}
+
+#main .books .check {
+    position: absolute;
+    z-index: 20;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 50%;
+
+}
+
+.el-checkbox__inner {
+    width: 20px !important;
+    border-radius: 50%;
 }
 </style>
