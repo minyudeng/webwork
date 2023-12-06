@@ -11,10 +11,12 @@ const store = useStore()
 const router = useRouter()
 const props = defineProps({
     shelfId: Number,
-    options: Object
+    options: Object,
+    isMine : Boolean
 })
 
 onMounted(() => {
+    document.title = '我的书架'
     if (props.shelfId === 0) {
         getCollectionBookList()
     } else {
@@ -29,7 +31,7 @@ const getBookList = () => {
         .then(res => {
             BookList.value = res.data
         }).finally(() => {
-            checkBid.value = BookList.value.map(book => book.shelfId)
+            
         })
 }
 const getCollectionBookList = () => {
@@ -108,11 +110,7 @@ const blankBook = (bid) => {
     })
     window.open(routeUrl.href, '_blank')
 }
-const clickCheck = () => {
-    event.stopPropagation()
-}
 const handleSelect = (key)=>{
-    console.log(key,checkBid.value)
     if (checkBid.value.length < 1) {
         MyMessage('至少加入一本书','warning')
         return
@@ -124,6 +122,8 @@ const handleSelect = (key)=>{
         MyMessage(res.msg,'success')
     }).catch(e=>{
         MyMessage('添加失败','error')
+    }).finally(()=>{
+        checkBid.value = []
     })
 }
 </script>
@@ -150,7 +150,7 @@ const handleSelect = (key)=>{
                         全选
                     </el-checkbox>
                 </n-button>
-                <n-button @click="delBooks" round color="#fa573e" style="margin-left: 20px;">
+                <n-button v-if="props.isMine" @click="delBooks" round color="#fa573e" style="margin-left: 20px;">
                     删除({{ checkBid.length }}本)
                 </n-button>
             </div>
@@ -165,7 +165,7 @@ const handleSelect = (key)=>{
                         <div class="status">
                             {{ item.status }}
                         </div>
-                        <el-checkbox v-if="showBtn" class="check" :label="item.bid" @click="clickCheck">
+                        <el-checkbox v-if="showBtn" class="check" :label="item.bid" @click.stop="">
                             {{ }}
                         </el-checkbox>
                     </div>

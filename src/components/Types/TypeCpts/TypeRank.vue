@@ -23,7 +23,6 @@ const statusTagRef = ref(props.statusTag);
 const rankTagRef = ref(props.rankTag);
 //监听父亲的值
 watch(props, () => {
-    console.log('Props updated. Calling getBookList...');
     getBookList()
 })
 //分页
@@ -65,7 +64,6 @@ const getBookList = () => {
         bookList.value = bookList.value.map((e, i) => {
             return { ...e, rank: startRow.value + i }
         })
-        console.log(bookList.value);
     })
 }
 

@@ -130,7 +130,7 @@ const routes = [
     },
 
   },{
-    path:'/book/:id(\\d+)',
+    path:'/book/:book(\\d+)',
     name:'book',
     component: ()=>import('@/views/BookView.vue'),
     meta: { isAuth: true },
@@ -144,7 +144,18 @@ const routes = [
           next(from.path)
         }
       }
-    }
+    },
+    children : [
+      {
+        path : 'chapter/:chapter(\\d+)',
+        name : 'chapter',
+        component: ()=>import('@/components/Book/Chapter.vue')
+      }
+    ]
+  },{
+    path : '/shelf/:id(\\d+)',
+    name : 'shelf',
+    component : import('../components/Square/ShelfDetail.vue')
   },
   {//404设置
     path: '/404',

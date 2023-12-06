@@ -12,7 +12,7 @@ const store = useStore()
 onMounted(() => {
     readHistory()
 })
-const bid = ref(router.currentRoute._rawValue.params.id)
+const bid = ref(router.currentRoute._rawValue.params.book)
 
 const readHistory = () =>{
     request.putForm('/user/book-history',{
@@ -22,6 +22,7 @@ const readHistory = () =>{
 }
 </script>
 <template>
+    <RouterView />
     <div id="main">
         <div id="detail">
             <Detail :bid="bid" />

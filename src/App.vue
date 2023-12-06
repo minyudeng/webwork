@@ -4,7 +4,7 @@
       <div style="flex-shrink: 0;">
         <Top :toggleDark="toggleDark" :isDark="isDark"/>
       </div>
-    <div style="flex-grow: 1; overflow: auto;">
+    <div style="flex-grow: 1;">
       <RouterView />
     </div>
     <el-dialog  v-model="dialogVisible" width="80%" :before-close="handleClose">
